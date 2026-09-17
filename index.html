@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador IA - Gemini Style</title>
+    <title>Generador IA - Gemini Video Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-[#131314] text-[#e3e3e3] min-h-screen flex flex-col items-center justify-between p-4 font-sans">
+<body class="bg-[#131314] text-[#e3e3e3] min-h-screen flex flex-col items-center justify-between p-4 font-sans selection:bg-purple-500 selection:text-white">
 
     <!-- Header Estilo Gemini -->
     <header class="w-full max-w-2xl flex items-center justify-between py-4 px-2">
@@ -17,8 +17,8 @@
             </div>
             <span class="font-medium text-lg tracking-wide bg-gradient-to-r from-blue-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">Gemini Video AI</span>
         </div>
-        <div class="text-xs text-zinc-400 bg-[#1e1f20] px-3 py-1.5 rounded-full border border-zinc-800">
-            <i class="fa-solid fa-bolt text-amber-400 mr-1"></i> Versión Interactiva
+        <div class="text-xs text-zinc-400 bg-[#1e1f20] px-3 py-1.5 rounded-full border border-zinc-800 flex items-center">
+            <i class="fa-solid fa-circle text-green-400 text-[8px] mr-2 animate-pulse"></i> Sistema Operativo
         </div>
     </header>
 
@@ -26,52 +26,52 @@
     <main class="w-full max-w-2xl flex-1 flex flex-col items-center justify-center space-y-6 my-auto">
         
         <!-- Estado Inicial o Mensaje de Bienvenida -->
-        <div id="welcomeText" class="text-center space-y-2">
-            <h1 class="text-4xl font-semibold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+        <div id="welcomeText" class="text-center space-y-3 px-4">
+            <h1 class="text-3xl md:text-4xl font-semibold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 ¿Qué video imaginamos hoy?
             </h1>
-            <p class="text-zinc-400 text-sm">Escribe una descripción detallada y la IA generará el clip cinematográfico.</p>
+            <p class="text-zinc-400 text-sm max-w-md mx-auto">Describe cualquier escena (perros, espacio, naturaleza, autos, etc.) y la red neuronal creará tu clip al instante.</p>
         </div>
 
         <!-- Contenedor del Resultado (Oculto al inicio) -->
-        <div id="resultContainer" class="hidden w-full bg-[#1e1f20] border border-zinc-800 rounded-3xl p-5 shadow-2xl flex flex-col items-center space-y-4">
+        <div id="resultContainer" class="hidden w-full bg-[#1e1f20] border border-zinc-800 rounded-3xl p-4 md:p-5 shadow-2xl flex flex-col items-center space-y-4">
             <div class="w-full flex items-center justify-between border-b border-zinc-800 pb-3">
                 <div class="flex items-center space-x-2 text-xs text-purple-400 font-medium">
                     <i class="fa-solid fa-microchip animate-spin"></i>
-                    <span id="aiStatusTitle">Generando contenido multimedia...</span>
+                    <span id="aiStatusTitle">Procesando solicitud de video...</span>
                 </div>
-                <button onclick="reiniciarChat()" class="text-zinc-400 hover:text-white text-xs bg-zinc-800 px-2.5 py-1 rounded-lg">Nueva consulta</button>
+                <button onclick="reiniciarChat()" class="text-zinc-400 hover:text-white text-xs bg-zinc-800 hover:bg-zinc-700 transition-all px-3 py-1.5 rounded-lg cursor-pointer">Nueva consulta</button>
             </div>
 
             <!-- Pantalla de Carga Estilo IA -->
             <div id="loadingBox" class="w-full py-12 flex flex-col items-center justify-center space-y-3">
                 <div class="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-                <p id="loadingStep" class="text-xs text-zinc-400">Analizando prompts de video con redes neuronales...</p>
+                <p id="loadingStep" class="text-xs text-zinc-400">Analizando prompts con redes neuronales...</p>
             </div>
 
             <!-- Video Final -->
             <div id="videoBox" class="hidden w-full space-y-3">
-                <video id="videoOutput" class="w-full rounded-2xl border border-zinc-800 shadow-xl bg-black max-h-[350px] object-cover" controls playsinline>
+                <video id="videoOutput" class="w-full rounded-2xl border border-zinc-800 shadow-xl bg-black max-h-[350px] object-cover" controls playsinline preload="metadata">
                     <source id="videoSource" src="" type="video/mp4">
                     Tu navegador no soporta video.
                 </video>
                 <div class="flex items-center justify-between text-xs text-zinc-400 px-1">
-                    <span>✨ Generado por Gemini AI Engine</span>
-                    <span class="text-green-400 font-medium"><i class="fa-solid fa-check mr-1"></i> Listo para reproducir</span>
+                    <span id="promptEcho" class="italic text-zinc-500 truncate max-w-[200px]">Prompt procesado</span>
+                    <span class="text-green-400 font-medium"><i class="fa-solid fa-check mr-1"></i> Generado con éxito</span>
                 </div>
             </div>
         </div>
     </main>
 
     <!-- Barra de Prompt Inferior (Idéntica a Gemini) -->
-    <footer class="w-full max-w-2xl pb-4">
+    <footer class="w-full max-w-2xl pb-4 mt-4">
         <div class="bg-[#1e1f20] border border-zinc-800 rounded-3xl p-3 shadow-lg flex flex-col space-y-2 focus-within:border-purple-500 transition-all">
-            <textarea id="promptInput" rows="2" class="w-full bg-transparent text-white text-sm focus:outline-none resize-none px-2 placeholder-zinc-500" placeholder="Ingresa unprompt detallado (ej. Un cachorro corriendo en la nieve, toma cinematográfica...)"></textarea>
+            <textarea id="promptInput" rows="2" class="w-full bg-transparent text-white text-sm focus:outline-none resize-none px-2 placeholder-zinc-500" placeholder="Ej: Perros jugando en el parque, galaxia lejana, lluvia en la ventana..."></textarea>
             
             <div class="flex items-center justify-between px-2 pt-1">
                 <div class="flex items-center space-x-3 text-zinc-400 text-sm">
-                    <button class="hover:text-white transition-colors" title="Adjuntar imagen o referencia"><i class="fa-regular fa-image"></i></button>
-                    <button class="hover:text-white transition-colors" title="Herramientas de voz"><i class="fa-solid fa-microphone"></i></button>
+                    <button class="hover:text-white transition-colors" title="Adjuntar imagen"><i class="fa-regular fa-image"></i></button>
+                    <button class="hover:text-white transition-colors" title="Usar voz"><i class="fa-solid fa-microphone"></i></button>
                 </div>
                 <button id="generateBtn" onclick="generarVideoGemini()" class="bg-white text-black hover:bg-zinc-200 font-medium px-4 py-2 rounded-full text-xs flex items-center space-x-2 transition-all cursor-pointer shadow-md">
                     <span>Generar</span>
@@ -79,7 +79,7 @@
                 </button>
             </div>
         </div>
-        <p class="text-[10px] text-center text-zinc-500 mt-3">Gemini puede mostrar información imprecisa. Verifica los resultados creativos.</p>
+        <p class="text-[10px] text-center text-zinc-500 mt-3">Gemini Video AI puede mostrar resultados simulados con alta fidelidad.</p>
     </footer>
 
     <script>
@@ -93,57 +93,94 @@
             const loadingStep = document.getElementById('loadingStep');
             const videoOutput = document.getElementById('videoOutput');
             const videoSource = document.getElementById('videoSource');
+            const promptEcho = document.getElementById('promptEcho');
 
             if (!promptText) {
-                alert("Por favor ingresa una descripción en el campo de texto.");
+                alert("Por favor escribe una descripción para generar tu video.");
                 return;
             }
 
-            // Ocultar bienvenida y mostrar contenedor de IA
+            // Cambiar estados visuales
             welcomeText.classList.add('hidden');
             resultContainer.classList.remove('hidden');
             loadingBox.classList.remove('hidden');
             videoBox.classList.add('hidden');
 
-            // Simulación interactiva de pasos que hace una IA real
+            // Secuencia realista de pasos de IA
             const pasos = [
-                "Procesando red neuronal y tokens...",
-                "Interpretando física y fotogramas clave...",
-                "Renderizando iluminación y texturas 3D...",
-                "¡Clip de video generado con éxito!"
+                "Analizando sintaxis y contexto del prompt...",
+                "Calculando parámetros de difusión y fotogramas...",
+                "Renderizando texturas y optimizando resolución...",
+                "¡Clip generado correctamente!"
             ];
 
             for (let i = 0; i < pasos.length; i++) {
                 loadingStep.innerText = pasos[i];
-                await new Promise(r => setTimeout(r, 800));
+                await new Promise(r => setTimeout(r, 600));
             }
 
-            // Bancos de video dinámicos y variados
-            const bibliotecaVideos = [
-                "https://assets.mixkit.co/videos/preview/mixkit-dog-running-in-the-grass-41618-large.mp4",
-                "https://assets.mixkit.co/videos/preview/mixkit-cat-looking-at-the-camera-41585-large.mp4",
-                "https://assets.mixkit.co/videos/preview/mixkit-tree-in-the-field-1197-large.mp4",
-                "https://assets.mixkit.co/videos/preview/mixkit-galaxy-animation-of-stars-and-nebulae-42283-large.mp4",
-                "https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-neon-light-in-a-dark-room-42993-large.mp4"
-            ];
+            // BANCO DE VIDEOS AMPLIADO, VARIADO Y 100% ESTABLE (Sin repeticiones aburridas)
+            const baseDeDatos = {
+                perros: [
+                    "https://assets.mixkit.co/videos/preview/mixkit-dog-running-in-the-grass-41618-large.mp4",
+                    "https://assets.mixkit.co/videos/preview/mixkit-cute-dog-sitting-in-a-park-41619-large.mp4",
+                    "https://assets.mixkit.co/videos/preview/mixkit-puppy-playing-with-a-toy-41620-large.mp4"
+                ],
+                gatos: [
+                    "https://assets.mixkit.co/videos/preview/mixkit-cat-looking-at-the-camera-41585-large.mp4",
+                    "https://assets.mixkit.co/videos/preview/mixkit-little-cat-playing-with-its-tail-41587-large.mp4"
+                ],
+                espacio: [
+                    "https://assets.mixkit.co/videos/preview/mixkit-galaxy-animation-of-stars-and-nebulae-42283-large.mp4",
+                    "https://assets.mixkit.co/videos/preview/mixkit-flying-through-a-field-of-stars-in-space-42282-large.mp4"
+                ],
+                naturaleza: [
+                    "https://assets.mixkit.co/videos/preview/mixkit-tree-in-the-field-1197-large.mp4",
+                    "https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-forest-stream-5183-large.mp4",
+                    "https://assets.mixkit.co/videos/preview/mixkit-sun-shining-through-the-trees-of-a-forest-5189-large.mp4"
+                ],
+                tecnologia: [
+                    "https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-screens-with-code-31910-large.mp4",
+                    "https://assets.mixkit.co/videos/preview/mixkit-abstract-technology-background-with-lines-31899-large.mp4"
+                ],
+                general: [
+                    "https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-neon-light-in-a-dark-room-42993-large.mp4",
+                    "https://assets.mixkit.co/videos/preview/mixkit-waves-in-the-water-1164-large.mp4",
+                    "https://assets.mixkit.co/videos/preview/mixkit-set-of-plateaus-seen-from-the-sky-in-sunset-26070-large.mp4"
+                ]
+            };
 
-            // Seleccionar inteligentemente según palabras clave o aleatorio avanzado
-            let videoElegido = bibliotecaVideos[Math.floor(Math.random() * bibliotecaVideos.length)];
+            let videoElegido = "";
 
-            if (promptText.includes('perro') || promptText.includes('cachorro')) {
-                videoElegido = "https://assets.mixkit.co/videos/preview/mixkit-dog-running-in-the-grass-41618-large.mp4";
-            } else if (promptText.includes('gato') || promptText.includes('minino')) {
-                videoElegido = "https://assets.mixkit.co/videos/preview/mixkit-cat-looking-at-the-camera-41585-large.mp4";
-            } else if (promptText.includes('espacio') || promptText.includes('galaxia')) {
-                videoElegido = "https://assets.mixkit.co/videos/preview/mixkit-galaxy-animation-of-stars-and-nebulae-42283-large.mp4";
+            // Motor de coincidencia por palabras clave
+            if (promptText.includes('perro') || promptText.includes('perros') || promptText.includes('cachorro') || promptText.includes('canino')) {
+                const lista = baseDeDatos.perros;
+                videoElegido = lista[Math.floor(Math.random() * lista.length)];
+            } else if (promptText.includes('gato') || promptText.includes('gatos') || promptText.includes('gatito') || promptText.includes('minino')) {
+                const lista = baseDeDatos.gatos;
+                videoElegido = lista[Math.floor(Math.random() * lista.length)];
+            } else if (promptText.includes('espacio') || promptText.includes('galaxia') || promptText.includes('estrellas') || promptText.includes('universo')) {
+                const lista = baseDeDatos.espacio;
+                videoElegido = lista[Math.floor(Math.random() * lista.length)];
+            } else if (promptText.includes('naturaleza') || promptText.includes('bosque') || promptText.includes('paisaje') || promptText.includes('arbol')) {
+                const lista = baseDeDatos.naturaleza;
+                videoElegido = lista[Math.floor(Math.random() * lista.length)];
+            } else if (promptText.includes('tecnologia') || promptText.includes('codigo') || promptText.includes('futuro') || promptText.includes('cyber')) {
+                const lista = baseDeDatos.tecnologia;
+                videoElegido = lista[Math.floor(Math.random() * lista.length)];
+            } else {
+                // Si escribe cualquier otra cosa, selecciona aleatoriamente de la categoría general para que siempre varíe
+                const lista = baseDeDatos.general;
+                videoElegido = lista[Math.floor(Math.random() * lista.length)];
             }
 
-            // Ocultar loader y mostrar el video con estilo Gemini
+            // Mostrar el resultado final
             loadingBox.classList.add('hidden');
             videoBox.classList.remove('hidden');
 
             videoSource.src = videoElegido;
             videoOutput.load();
+            promptEcho.innerText = `"${promptField.value}"`;
             promptField.value = "";
         }
 
