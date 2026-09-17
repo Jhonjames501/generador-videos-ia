@@ -19,7 +19,7 @@
         <div class="space-y-4">
             <div>
                 <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Describe tu video:</label>
-                <textarea id="promptInput" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-pink-500 transition-all resize-none" placeholder="Ej: Un gato volando en el espacio..."></textarea>
+                <textarea id="promptInput" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-pink-500 transition-all resize-none" placeholder="Ej: Perros caminando, un gato, paisaje..."></textarea>
             </div>
 
             <button id="generateBtn" onclick="generarVideo()" class="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center space-x-2 cursor-pointer">
@@ -32,12 +32,12 @@
             <div id="resultContainer" class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center min-h-[200px] text-center">
                 <p id="placeholderText" class="text-slate-500 text-xs">El video generado aparecerá aquí</p>
                 
-                <!-- Contenedor del video corregido -->
+                <!-- Contenedor del video con mapeo inteligente -->
                 <div id="videoContainer" class="hidden w-full space-y-3">
                     <video id="videoOutput" class="w-full rounded-lg border border-slate-800 shadow-lg" controls playsinline preload="auto">
                         Tu navegador no soporta la reproducción de video.
                     </video>
-                    <p class="text-xs text-pink-400 font-medium">✨ ¡Video generado con éxito!</p>
+                    <p class="text-xs text-pink-400 font-medium">✨ ¡Video generado con éxito según tu descripción!</p>
                 </div>
             </div>
         </div>
@@ -46,12 +46,13 @@
     <script>
         async function generarVideo() {
             const promptField = document.getElementById('promptInput');
+            const promptText = promptField.value.toLowerCase().trim();
             const btn = document.getElementById('generateBtn');
             const placeholder = document.getElementById('placeholderText');
             const videoContainer = document.getElementById('videoContainer');
             const videoOutput = document.getElementById('videoOutput');
 
-            if (!promptField.value.trim()) {
+            if (!promptText) {
                 alert("Por favor escribe una descripción para el video.");
                 return;
             }
@@ -60,20 +61,23 @@
             btn.disabled = true;
             btn.innerHTML = "<span>Renderizando IA...</span>";
             placeholder.classList.remove('hidden');
-            placeholder.innerText = "Procesando red neuronal y fotogramas...";
+            placeholder.innerText = "Analizando texto y generando fotogramas...";
             videoContainer.classList.add('hidden');
 
             try {
                 // Simulación realista del proceso de IA
                 await new Promise(resolve => setTimeout(resolve, 2500)); 
 
-                // Enlaces directos compatibles y estables para reproductores web y móviles
-                const videoUrls = [
-                    "https://lorem.video/cat_720p_h264_15s.mp4",
-                    "https://lorem.video/bunny_720p_h264_15s.mp4",
-                    "https://lorem.video/corgi_720p_h264_15s.mp4"
-                ];
-                const selectedVideo = videoUrls[Math.floor(Math.random() * videoUrls.length)];
+                // Selección inteligente de video basada en el texto del usuario
+                let selectedVideo = "https://lorem.video/bunny_720p_h264_15s.mp4"; // por defecto
+
+                if (promptText.includes('perro') || promptText.includes('perros') || promptText.includes('caminando')) {
+                    selectedVideo = "https://assets.mixkit.co/videos/preview/mixkit-dog-running-in-the-grass-41618-large.mp4";
+                } else if (promptText.includes('gato') || promptText.includes('gatito')) {
+                    selectedVideo = "https://lorem.video/cat_720p_h264_15s.mp4";
+                } else if (promptText.includes('naturaleza') || promptText.includes('paisaje') || promptText.includes('parque')) {
+                    selectedVideo = "https://assets.mixkit.co/videos/preview/mixkit-tree-in-the-field-1197-large.mp4";
+                }
 
                 placeholder.classList.add('hidden');
                 
