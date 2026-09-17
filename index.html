@@ -19,7 +19,7 @@
         <div class="space-y-4">
             <div>
                 <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Describe tu video:</label>
-                <textarea id="promptInput" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-pink-500 transition-all resize-none" placeholder="Ej: Un perro, un gato, paisaje..."></textarea>
+                <textarea id="promptInput" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-pink-500 transition-all resize-none" placeholder="Ej: Perros jugando, un gato, paisaje..."></textarea>
             </div>
 
             <button id="generateBtn" onclick="generarVideo()" class="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center space-x-2 cursor-pointer">
@@ -32,12 +32,13 @@
             <div id="resultContainer" class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center min-h-[200px] text-center">
                 <p id="placeholderText" class="text-slate-500 text-xs">El video generado aparecerá aquí</p>
                 
-                <!-- Contenedor del video con enlaces 100% estables -->
+                <!-- Contenedor del video corregido con source interno -->
                 <div id="videoContainer" class="hidden w-full space-y-3">
-                    <video id="videoOutput" class="w-full rounded-lg border border-slate-800 shadow-lg bg-black" controls playsinline preload="metadata">
+                    <video id="videoOutput" class="w-full rounded-lg border border-slate-800 shadow-lg bg-black" controls autoplay playsinline muted>
+                        <source id="videoSource" src="" type="video/mp4">
                         Tu navegador no soporta la reproducción de video.
                     </video>
-                    <p id="successText" class="text-xs text-pink-400 font-medium">✨ ¡Video generado con éxito!</p>
+                    <p class="text-xs text-pink-400 font-medium">✨ ¡Video generado con éxito!</p>
                 </div>
             </div>
         </div>
@@ -51,6 +52,7 @@
             const placeholder = document.getElementById('placeholderText');
             const videoContainer = document.getElementById('videoContainer');
             const videoOutput = document.getElementById('videoOutput');
+            const videoSource = document.getElementById('videoSource');
 
             if (!promptText) {
                 alert("Por favor escribe una descripción para el video.");
@@ -68,26 +70,23 @@
                 // Simulación del proceso de IA
                 await new Promise(resolve => setTimeout(resolve, 2000)); 
 
-                // Enlaces directos altamente estables y libres de bloqueos CORS
-                let selectedVideo = "";
+                // Usamos enlaces de videos públicos ultra-estables de respaldo directo
+                let selectedVideo = "https://www.w3schools.com/html/mov_bbb.mp4"; // Video universal garantizado
 
-                if (promptText.includes('perro') || promptText.includes('perros') || promptText.includes('caminando')) {
-                    // Video de perrito de prueba estable
-                    selectedVideo = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+                if (promptText.includes('perro') || promptText.includes('perros') || promptText.includes('caminando') || promptText.includes('jugando')) {
+                    selectedVideo = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
                 } else if (promptText.includes('gato') || promptText.includes('gatito')) {
-                    selectedVideo = "https://lorem.video/cat_720p_h264_15s.mp4";
-                } else {
-                    // Video general por defecto (Bunny)
-                    selectedVideo = "https://test-videos.co.uk/vids/big-buck-bunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4";
+                    selectedVideo = "https://www.w3schools.com/html/mov_bbb.mp4";
                 }
 
                 placeholder.classList.add('hidden');
                 
-                videoOutput.pause();
-                videoOutput.src = selectedVideo;
+                // Asignar y cargar de forma segura
+                videoSource.src = selectedVideo;
                 videoOutput.load();
                 
                 videoContainer.classList.remove('hidden');
+                videoOutput.play().catch(e => console.log("Autoplay prevenido por navegador"));
 
             } catch (error) {
                 placeholder.classList.remove('hidden');
