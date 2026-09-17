@@ -3,146 +3,391 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador IA - Gemini Video Studio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Gemini Clone Interface</title>
+    <!-- Iconos de Google Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --sidebar-bg: #f0f4f9;
+            --text-color: #1f1f1f;
+            --text-secondary: #444746;
+            --accent-color: #d3e3fd;
+            --button-hover: #e9eeef;
+            --border-color: #e0e0e0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        aside {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 16px;
+            border-right: 1px solid var(--border-color);
+            height: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-left: 8px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+
+        .icon-btn:hover {
+            background-color: var(--button-hover);
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background-color: var(--button-hover);
+        }
+
+        .section-title {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 16px 0 8px 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .recent-list {
+            overflow-y: auto;
+            max-height: 150px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .recent-item {
+            padding: 8px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+
+        .recent-item:hover {
+            background-color: var(--button-hover);
+        }
+
+        .sidebar-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 12px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background-color: #5f6368;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .update-btn {
+            background-color: var(--accent-color);
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #041e49;
+            text-align: center;
+        }
+
+        /* --- MAIN CONTENT --- */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            position: relative;
+        }
+
+        header.main-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+        }
+
+        .model-selector {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* --- CHAT AREA --- */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .welcome-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            max-width: 600px;
+        }
+
+        .gemini-sparkle {
+            font-size: 48px;
+            background: linear-gradient(45deg, #4285f4, #9b72cb, #d96570);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-box h1 {
+            font-size: 36px;
+            font-weight: 400;
+            color: #202124;
+        }
+
+        /* --- INPUT BAR --- */
+        .input-container {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .input-box {
+            background-color: var(--sidebar-bg);
+            width: 100%;
+            max-width: 750px;
+            border-radius: 28px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .input-box input {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: var(--text-color);
+        }
+
+        .input-box input::placeholder {
+            color: #747775;
+        }
+
+        /* Responsividad para móviles */
+        @media (max-width: 768px) {
+            aside {
+                position: absolute;
+                z-index: 100;
+                transform: translateX(-100%);
+            }
+            aside.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
 </head>
-<body class="bg-[#131314] text-[#e3e3e3] min-h-screen flex flex-col items-center justify-between p-4 font-sans selection:bg-purple-500 selection:text-white">
+<body>
 
-    <!-- Header Estilo Gemini -->
-    <header class="w-full max-w-2xl flex items-center justify-between py-4 px-2">
-        <div class="flex items-center space-x-2">
-            <div class="bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-500 p-2 rounded-full text-white shadow-md">
-                <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+    <!-- Panel Lateral (Sidebar) -->
+    <aside id="sidebar">
+        <div class="sidebar-top">
+            <div class="sidebar-header">
+                <h2>Gemini</h2>
+                <button class="icon-btn" onclick="toggleSidebar()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
             </div>
-            <span class="font-medium text-lg tracking-wide bg-gradient-to-r from-blue-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">Gemini Video AI</span>
-        </div>
-        <div class="text-xs text-zinc-400 bg-[#1e1f20] px-3 py-1.5 rounded-full border border-zinc-800 flex items-center">
-            <i class="fa-solid fa-circle text-green-400 text-[8px] mr-2 animate-pulse"></i> Sistema Activo
-        </div>
-    </header>
 
-    <!-- Contenedor Principal -->
-    <main class="w-full max-w-2xl flex-1 flex flex-col items-center justify-center space-y-6 my-auto">
-        
-        <!-- Estado Inicial -->
-        <div id="welcomeText" class="text-center space-y-3 px-4">
-            <h1 class="text-3xl md:text-4xl font-semibold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                ¿Qué video imaginamos hoy?
-            </h1>
-            <p class="text-zinc-400 text-sm max-w-md mx-auto">Describe cualquier escena y la red neuronal creará tu clip al instante.</p>
+            <a href="#" class="nav-item">
+                <span class="material-symbols-outlined">edit_square</span>
+                Nueva conversación
+            </a>
+            <a href="#" class="nav-item">
+                <span class="material-symbols-outlined">search</span>
+                Buscar conversaciones
+            </a>
+            <a href="#" class="nav-item">
+                <span class="material-symbols-outlined">image</span>
+                Imágenes
+            </a>
+            <a href="#" class="nav-item">
+                <span class="material-symbols-outlined">video_library</span>
+                Vídeos
+            </a>
+            <a href="#" class="nav-item">
+                <span class="material-symbols-outlined">grid_view</span>
+                Biblioteca
+            </a>
+
+            <div class="section-title">Cuadernos</div>
+            <a href="#" class="nav-item">
+                <span class="material-symbols-outlined">add</span>
+                Nuevo cuaderno
+            </a>
+
+            <div class="section-title">Reciente</div>
+            <div class="recent-list">
+                <div class="recent-item">Crear App de Vídeos IA</div>
+                <div class="recent-item">Cambio de voz requiere suscripción</div>
+                <div class="recent-item">Cambio de voz requiere suscripción</div>
+            </div>
         </div>
 
-        <!-- Contenedor del Resultado -->
-        <div id="resultContainer" class="hidden w-full bg-[#1e1f20] border border-zinc-800 rounded-3xl p-4 md:p-5 shadow-2xl flex flex-col items-center space-y-4">
-            <div class="w-full flex items-center justify-between border-b border-zinc-800 pb-3">
-                <div class="flex items-center space-x-2 text-xs text-purple-400 font-medium">
-                    <i class="fa-solid fa-microchip animate-spin"></i>
-                    <span id="aiStatusTitle">Procesando solicitud de video...</span>
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">J</div>
+                <span>Jhon James</span>
+            </div>
+            <button class="update-btn">Actualizar</button>
+            <button class="icon-btn" style="align-self: flex-end;">
+                <span class="material-symbols-outlined">settings</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main>
+        <header class="main-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="icon-btn" onclick="toggleSidebar()">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <div class="model-selector">
+                    <span>Flash-Lite</span>
+                    <span class="material-symbols-outlined">expand_more</span>
                 </div>
-                <button onclick="reiniciarChat()" class="text-zinc-400 hover:text-white text-xs bg-zinc-800 px-3 py-1.5 rounded-lg cursor-pointer">Nueva consulta</button>
             </div>
-
-            <!-- Pantalla de Carga -->
-            <div id="loadingBox" class="w-full py-12 flex flex-col items-center justify-center space-y-3">
-                <div class="w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-                <p id="loadingStep" class="text-xs text-zinc-400">Analizando prompts con redes neuronales...</p>
+            
+            <div class="header-actions">
+                <button class="icon-btn">
+                    <span class="material-symbols-outlined">explore</span>
+                </button>
+                <div class="avatar" style="width: 36px; height: 36px; font-size: 15px;">J</div>
             </div>
+        </header>
 
-            <!-- Video Final -->
-            <div id="videoBox" class="hidden w-full space-y-3">
-                <video id="videoOutput" class="w-full rounded-2xl border border-zinc-800 shadow-xl bg-black max-h-[350px] object-cover" controls autoplay playsinline>
-                    <source id="videoSource" src="" type="video/mp4">
-                    Tu navegador no soporta video.
-                </video>
-                <div class="flex items-center justify-between text-xs text-zinc-400 px-1">
-                    <span id="promptEcho" class="italic text-zinc-500 truncate max-w-[200px]">Prompt procesado</span>
-                    <span class="text-green-400 font-medium"><i class="fa-solid fa-check mr-1"></i> Generado con éxito</span>
-                </div>
+        <!-- Zona de Bienvenida / Chat -->
+        <div class="chat-container">
+            <div class="welcome-box">
+                <span class="material-symbols-outlined gemini-sparkle">auto_awesome</span>
+                <h1>Hola, Jhon. ¿Qué tienes en mente?</h1>
+            </div>
+        </div>
+
+        <!-- Barra de entrada de texto inferior -->
+        <div class="input-container">
+            <div class="input-box">
+                <button class="icon-btn">
+                    <span class="material-symbols-outlined">add</span>
+                </button>
+                <input type="text" placeholder="Pregunta...">
+                <button class="icon-btn">
+                    <span class="material-symbols-outlined">mic</span>
+                </button>
+                <button class="icon-btn">
+                    <span class="material-symbols-outlined">voice_selection</span>
+                </button>
             </div>
         </div>
     </main>
 
-    <!-- Barra de Prompt Inferior -->
-    <footer class="w-full max-w-2xl pb-4 mt-4">
-        <div class="bg-[#1e1f20] border border-zinc-800 rounded-3xl p-3 shadow-lg flex flex-col space-y-2 focus-within:border-purple-500 transition-all">
-            <textarea id="promptInput" rows="2" class="w-full bg-transparent text-white text-sm focus:outline-none resize-none px-2 placeholder-zinc-500" placeholder="Ej: Perros jugando en el parque, galaxia, naturaleza..."></textarea>
-            
-            <div class="flex items-center justify-between px-2 pt-1">
-                <div class="flex items-center space-x-3 text-zinc-400 text-sm">
-                    <button class="hover:text-white transition-colors"><i class="fa-regular fa-image"></i></button>
-                    <button class="hover:text-white transition-colors"><i class="fa-solid fa-microphone"></i></button>
-                </div>
-                <button id="generateBtn" onclick="generarVideoGemini()" class="bg-white text-black hover:bg-zinc-200 font-medium px-4 py-2 rounded-full text-xs flex items-center space-x-2 transition-all cursor-pointer shadow-md">
-                    <span>Generar</span>
-                    <i class="fa-solid fa-arrow-up"></i>
-                </button>
-            </div>
-        </div>
-    </footer>
-
     <script>
-        async function generarVideoGemini() {
-            const promptField = document.getElementById('promptInput');
-            const promptText = promptField.value.toLowerCase().trim();
-            const welcomeText = document.getElementById('welcomeText');
-            const resultContainer = document.getElementById('resultContainer');
-            const loadingBox = document.getElementById('loadingBox');
-            const videoBox = document.getElementById('videoBox');
-            const loadingStep = document.getElementById('loadingStep');
-            const videoOutput = document.getElementById('videoOutput');
-            const videoSource = document.getElementById('videoSource');
-            const promptEcho = document.getElementById('promptEcho');
-
-            if (!promptText) {
-                alert("Por favor escribe una descripción para generar tu video.");
-                return;
-            }
-
-            welcomeText.classList.add('hidden');
-            resultContainer.classList.remove('hidden');
-            loadingBox.classList.remove('hidden');
-            videoBox.classList.add('hidden');
-
-            const pasos = [
-                "Analizando sintaxis y contexto del prompt...",
-                "Calculando parámetros de difusión y fotogramas...",
-                "Renderizando texturas y optimizando resolución...",
-                "¡Clip generado correctamente!"
-            ];
-
-            for (let i = 0; i < pasos.length; i++) {
-                loadingStep.innerText = pasos[i];
-                await new Promise(r => setTimeout(r, 500));
-            }
-
-            // ENLACES 100% LIBRES DE RESTRICCIONES (Compatibles con celulares y GitHub Pages)
-            const videosLibres = [
-                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
-            ];
-
-            // Seleccionar de forma dinámica e inteligente
-            let videoElegido = videosLibres[Math.floor(Math.random() * videosLibres.length)];
-
-            loadingBox.classList.add('hidden');
-            videoBox.classList.remove('hidden');
-
-            videoSource.src = videoElegido;
-            videoOutput.load();
-            promptEcho.innerText = `"${promptField.value}"`;
-            promptField.value = "";
-            
-            videoOutput.play().catch(e => console.log("Reproducción automática bloqueada por el navegador"));
-        }
-
-        function reiniciarChat() {
-            document.getElementById('welcomeText').classList.remove('hidden');
-            document.getElementById('resultContainer').classList.add('hidden');
-            document.getElementById('promptInput').value = "";
+        // Función simple para abrir/cerrar el menú lateral en pantallas pequeñas
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
         }
     </script>
 </body>
