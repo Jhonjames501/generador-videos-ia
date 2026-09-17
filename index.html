@@ -19,7 +19,7 @@
         <div class="space-y-4">
             <div>
                 <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Describe tu video:</label>
-                <textarea id="promptInput" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-pink-500 transition-all resize-none" placeholder="Ej: Un perro caminando en un paisaje futurista..."></textarea>
+                <textarea id="promptInput" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-pink-500 transition-all resize-none" placeholder="Ej: Un gato riéndose y caminando..."></textarea>
             </div>
 
             <button id="generateBtn" onclick="generarVideo()" class="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-purple-900/30 flex items-center justify-center space-x-2">
@@ -29,9 +29,10 @@
 
         <div class="mt-6">
             <p class="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Resultado:</p>
-            <div id="resultContainer" class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex items-center justify-center p-2 min-h-[200px]">
-                <p id="placeholderText" class="text-slate-600 text-xs">El video generado aparecerá aquí</p>
-                <video id="videoOutput" class="w-full rounded-lg hidden" controls autoplay loop></video>
+            <div id="resultContainer" class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col items-center justify-center p-2 min-h-[220px]">
+                <p id="placeholderText" class="text-slate-500 text-xs text-center p-4">El video generado aparecerá aquí</p>
+                <!-- Agregamos playsinline para compatibilidad total con móviles -->
+                <video id="videoOutput" class="w-full rounded-lg hidden" controls playsinline preload="auto"></video>
             </div>
         </div>
     </div>
@@ -48,30 +49,38 @@
                 return;
             }
 
-            // Cambiar estado del botón a cargando
+            // Cambiar estado del botón y limpiar reproductor anterior
             btn.disabled = true;
-            btn.innerHTML = "<span>Generando con IA... (Esto puede tomar unos segundos)</span>";
+            btn.innerHTML = "<span>Generando con IA... (Analizando fotogramas)</span>";
             placeholder.classList.remove('hidden');
-            placeholder.innerText = "Procesando IA y renderizando fotogramas...";
+            placeholder.innerText = "Conectando al motor neuronal y renderizando...";
             videoOutput.classList.add('hidden');
+            videoOutput.pause();
 
             try {
-                // Simulador dinámico avanzado conectado a motores open-source de muestra gratuitos
-                // (Aquí puedes colocar tu endpoint personalizado o token de API cuando lo desees)
-                await new Promise(resolve => setTimeout(resolve, 4000)); 
+                // Simulación de procesamiento de IA
+                await new Promise(resolve => setTimeout(resolve, 3500)); 
 
-                // Video de demostración de alta calidad adaptado al flujo real
+                // Enlaces directos y seguros optimizados para reproducción web móvil
                 const videoUrls = [
-                    "https://assets.mixkit.co/videos/preview/mixkit-tree-in-the-field-1197-large.mp4",
-                    "https://assets.mixkit.co/videos/preview/mixkit-futuristic-city-with-flying-vehicles-41566-large.mp4",
-                    "https://assets.mixkit.co/videos/preview/mixkit-waves-in-the-water-1164-large.mp4"
+                    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+                    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
                 ];
                 const randomVideo = videoUrls[Math.floor(Math.random() * videoUrls.length)];
 
                 placeholder.classList.add('hidden');
                 videoOutput.src = randomVideo;
                 videoOutput.classList.remove('hidden');
+                
+                // Forzar carga y reproducción limpia
+                videoOutput.load();
+                await videoOutput.play().catch(e => {
+                    console.log("Reproducción automática bloqueada por el navegador, se muestran controles manuales.");
+                });
+
             } catch (error) {
+                placeholder.classList.remove('hidden');
                 placeholder.innerText = "Error al generar el video. Intenta de nuevo.";
             } finally {
                 btn.disabled = false;
