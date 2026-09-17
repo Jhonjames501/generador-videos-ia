@@ -32,7 +32,7 @@
             <div id="resultContainer" class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center min-h-[200px] text-center">
                 <p id="placeholderText" class="text-slate-500 text-xs">El video generado aparecerá aquí</p>
                 
-                <!-- Contenedor del video optimizado -->
+                <!-- Contenedor del video corregido -->
                 <div id="videoContainer" class="hidden w-full space-y-3">
                     <video id="videoOutput" class="w-full rounded-lg border border-slate-800 shadow-lg" controls playsinline preload="auto">
                         Tu navegador no soporta la reproducción de video.
@@ -45,12 +45,11 @@
 
     <script>
         async function generarVideo() {
-            const prompt = document.getElementById('promptInput5').value || document.getElementById('promptInput').value.trim();
+            const promptField = document.getElementById('promptInput');
             const btn = document.getElementById('generateBtn');
             const placeholder = document.getElementById('placeholderText');
             const videoContainer = document.getElementById('videoContainer');
             const videoOutput = document.getElementById('videoOutput');
-            const promptField = document.getElementById('promptInput');
 
             if (!promptField.value.trim()) {
                 alert("Por favor escribe una descripción para el video.");
@@ -68,7 +67,7 @@
                 // Simulación realista del proceso de IA
                 await new Promise(resolve => setTimeout(resolve, 2500)); 
 
-                // Enlaces directos y estables optimizados para móviles
+                // Enlaces directos compatibles y estables para reproductores web y móviles
                 const videoUrls = [
                     "https://lorem.video/cat_720p_h264_15s.mp4",
                     "https://lorem.video/bunny_720p_h264_15s.mp4",
